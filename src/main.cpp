@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-#define SETUP_TOF_SERIAL Serial2
 #define TOF_SERIAL Serial1
 
 // Define constants for frame head and tail
@@ -14,15 +13,8 @@ uint8_t rawData[4096*3]; // Assuming the maximum data length
 void setup() {
   Serial.begin(921600);
   Serial.println("Starting");
+  // Delays prevent uart issues
   delay(1000);
-  // If setting the sensor for the first time or sensor unset itself, then use baudrate 115200 first then disable afterwards else uart will not work.
-  
-  /*
-  SETUP_TOF_SERIAL.begin(115200);
-  SETUP_TOF_SERIAL.write("AT+BAUD=5\r");
-  SETUP_TOF_SERIAL.end();
-*/
-
   TOF_SERIAL.begin(115200);
   TOF_SERIAL.write("AT+BAUD=5\r");
   TOF_SERIAL.end();
