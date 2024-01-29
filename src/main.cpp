@@ -11,7 +11,7 @@ uint8_t rawData[4096*3]; // Assuming the maximum data length
 //uint8_t frameData[4096]; // Assuming the maximum data length
 
 void setup() {
-  Serial.begin(921600);
+  Serial.begin(1500000);
   Serial.println("Starting");
   // Delays prevent uart issues
   delay(1000);
@@ -27,7 +27,7 @@ void setup() {
   //delay(100);
   TOF_SERIAL.write("AT+DISP=5\r");
   delay(200);
-  TOF_SERIAL.write("AT+FPS=10\r");
+  TOF_SERIAL.write("AT+FPS=7\r");
   //TOF_SERIAL.write("AT+SAVE\r");
   //
   
@@ -56,15 +56,6 @@ void getSerialBytes(uint8_t* data, uint16_t len)
 }
 void loop() {
 
-/*
-    while (TOF_SERIAL.available()) 
-    {
-      int data = TOF_SERIAL.read();
-      Serial.print(data,HEX);
-        
-        
-    }
-*/
     // Read data from UART
     if (TOF_SERIAL.available()) 
     {
@@ -100,10 +91,24 @@ void loop() {
             | 4-10019     | data (first 16 bytes is meta data, rest is real data)
             | 10019-10021 | checksum (lower 8 bits) and end of transmission (EOT) 0xDD
             */
-            Serial.print("SAMPLE: ");
-            Serial.println(rawData[5000]); 
+            Serial.print("S");
+            uint16_t row = 0;
+            for(uint16_t i = 0; i< 10000; i++)
+            {
+              Serial.print(rawData[i+20], HEX); 
+              Serial.print(","); 
+              /*
+              row ++;
+              if(row == 100)
+              {
+                Serial.println("");
+                row =0;
+              }*/
+            }
+            Serial.println("N"); 
+            //Serial.println(rawData[5000]); 
             // The data is exponentially scaled so values futher away are less accurate than values closer to the sensor. changing the UNIT from 0 to another number (1-9), linear scale, less range. data in mm
-            Serial.println((rawData[5000]/5.1)*(rawData[5000]/5.1));
+            //Serial.println((rawData[5000]/5.1)*(rawData[5000]/5.1));
 
             uint8_t endbytes[2];
             getSerialBytes(&endbytes[0], 2);
